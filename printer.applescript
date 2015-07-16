@@ -1,9 +1,8 @@
 --UI of the application
 global ButtonReturn
 try
-	
 	set checkPrinter to "Printing History"
-	set otherAction to "Cancel"
+	set otherAction to "Show All Printers"
 	
 	display alert "Publish4All" message "What do you want to check!" buttons {otherAction, checkPrinter}
 	
@@ -16,7 +15,9 @@ try
 			open location "http://localhost:631/jobs?which_jobs=all"
 		end tell
 	end if
+	
 	if (ButtonReturn is equal to otherAction) then
+		display alert "Printer Names:" message "Printer Count: " & (count of printNameAarry) buttons printNameAarry
 	end if
 	
 	
@@ -58,3 +59,12 @@ set openFile to open for access file filePath with write permission
 set eof of openFile to 0
 write uniqueText to openFile starting at eof as text
 close access openFile
+
+
+-- set all the printersName
+set printNameLoop to every paragraph of the (do shell script "lpstat -a")
+set printNameAarry to {}
+repeat with theItem in printNameLoop
+	set printerSingleName to first word of theItem
+	set end of printNameAarry to printerSingleName
+end repeat
